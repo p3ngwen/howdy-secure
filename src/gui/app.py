@@ -65,11 +65,19 @@ def get_status():
         except Exception:
             pass
 
-    ir_active = subprocess.run(
-        ['systemctl', 'is-active', '--quiet', 'linux-enable-ir-emitter']
+    # linux-enable-ir-emitter is a oneshot service — check enabled, not active
+    ir_enabled = subprocess.run(
+        ['systemctl', 'is-enabled', '--quiet', 'linux-enable-ir-emitter']
     ).returncode == 0
 
     models = _list_models()
+
+    # Fall back to file existence if howdy list returned nothing (e.g. no SUDO_USER)
+    if not models and (HOWDY_MODELS / f'{REAL_USER}.dat').exists():
+        import time
+        mtime = (HOWDY_MODELS / f'{REAL_USER}.dat').stat().st_mtime
+        date  = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(mtime))
+        models = [(0, date, REAL_USER.capitalize())]
 
     return {
         'howdy_installed': bool(shutil.which('howdy')),
@@ -78,7 +86,7 @@ def get_status():
         'pam_active':      pam_active,
         'face_count':      len(models),
         'models':          models,
-        'ir_emitter':      ir_active,
+        'ir_emitter':      ir_enabled,
         'ir_installed':    bool(shutil.which('linux-enable-ir-emitter')),
     }
 
@@ -223,7 +231,7 @@ class OverviewPage(Gtk.Box):
             'tpm_sealed':      (st['tpm_sealed'],       'Sealed' if st['tpm_sealed'] else 'Not sealed'),
             'face_count':      (st['face_count'] > 0,  f"{st['face_count']} model(s) enrolled" if st['face_count'] else 'No model enrolled'),
             'howdy_installed': (st['howdy_installed'],  'Installed' if st['howdy_installed'] else 'Not installed'),
-            'ir_emitter':      (st['ir_installed'],     'Active' if st['ir_emitter'] else ('Not running' if st['ir_installed'] else 'Not installed')),
+            'ir_emitter':      (st['ir_installed'],     'Enabled' if st['ir_emitter'] else ('Not enabled' if st['ir_installed'] else 'Not installed')),
             'recovery_set':    (st['recovery_set'],     'Set' if st['recovery_set'] else 'Not configured'),
         }
         for key, (ok, msg) in checks.items():
