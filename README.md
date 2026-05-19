@@ -34,7 +34,40 @@ Your keyring password is sealed into the TPM at setup time. It can only be unsea
 
 ## Installation
 
-### Quick install (recommended)
+### .deb package (easiest)
+
+Download the latest `.deb` from the
+[Releases](https://github.com/p3ngwen/howdy-secure/releases) page and
+double-click it, or install from the terminal:
+
+```bash
+sudo dpkg -i howdy-secure_1.0.0_amd64.deb
+sudo apt-get install -f   # pulls in any missing dependencies
+```
+
+After install, launch the setup wizard:
+
+```bash
+howdy-secure-installer    # GUI wizard
+# or
+sudo howdy-secure setup   # terminal
+```
+
+The tray icon (`howdy-secure-app`) starts automatically at next login.
+
+### Build from source
+
+```bash
+git clone https://github.com/p3ngwen/howdy-secure
+cd howdy-secure
+./build-deb.sh                              # produces dist/howdy-secure_1.0.0_amd64.deb
+sudo dpkg -i dist/howdy-secure_1.0.0_amd64.deb
+```
+
+Requires: `fakeroot`, `build-essential`, `libpam0g-dev`
+(`sudo apt install fakeroot build-essential libpam0g-dev`)
+
+### Script install (no .deb)
 
 The install script handles everything end-to-end: IR emitter → Howdy → Howdy Secure.
 
@@ -147,7 +180,17 @@ src/
     recovery.py             — recovery code generation and verification
     pam_config.py           — PAM file editing
     status.py               — installation health check
+  gui/
+    installer.py            — GTK3 installer wizard (howdy-secure-installer)
+    app.py                  — tray indicator + management app (howdy-secure-app)
+debian/
+  control                   — package metadata and dependencies
+  postinst / prerm          — install/remove hooks
+  howdy-secure.desktop      — app menu entry
+  howdy-secure-tray.desktop — autostart tray on login
 Makefile
+build-deb.sh                — builds dist/howdy-secure_<version>_<arch>.deb
+install.sh                  — script-based install (no .deb needed)
 ```
 
 ---
@@ -160,7 +203,7 @@ PRs welcome. Priorities for future versions:
 - [ ] fprintd fingerprint backend (in addition to Howdy)
 - [ ] PCR policy binding (optional, for users who want stricter TPM attestation)
 - [ ] Fedora / Arch packaging
-- [ ] GUI enrollment wizard (GTK)
+- [x] GUI installer wizard and management app (GTK)
 
 ---
 
