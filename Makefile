@@ -8,7 +8,7 @@ PAM_DIR    = /usr/lib/security
 BIN_DIR    = /usr/local/bin
 CLI_DIR    = /usr/local/lib/howdy-secure
 
-.PHONY: all clean install uninstall
+.PHONY: all clean install uninstall gui-deps
 
 all: $(PAM_SO) $(UNSEAL_BIN)
 
@@ -27,14 +27,24 @@ install: all
 	install -d $(CLI_DIR)
 	install -m 644 src/cli/*.py $(CLI_DIR)/
 	install -m 755 src/cli/howdy-secure $(BIN_DIR)/howdy-secure
-	@echo "Done. Run: sudo howdy-secure setup"
+	@echo "Installing GUI installer..."
+	install -d $(CLI_DIR)/gui
+	install -m 644 src/gui/installer.py $(CLI_DIR)/gui/installer.py
+	printf '#!/bin/sh\nexec python3 $(CLI_DIR)/gui/installer.py "$$@"\n' \
+		> $(BIN_DIR)/howdy-secure-installer
+	chmod 755 $(BIN_DIR)/howdy-secure-installer
+	@echo "Done. Run: sudo howdy-secure setup  or  howdy-secure-installer"
 
 uninstall:
 	rm -f $(PAM_DIR)/$(PAM_SO)
 	rm -f $(BIN_DIR)/$(UNSEAL_BIN)
 	rm -f $(BIN_DIR)/howdy-secure
+	rm -f $(BIN_DIR)/howdy-secure-installer
 	rm -rf $(CLI_DIR)
 	@echo "Uninstalled. Run 'sudo howdy-secure remove' first to clean PAM config and TPM."
+
+gui-deps:
+	apt-get install -y python3-gi gir1.2-gtk-3.0 gir1.2-vte-2.91
 
 clean:
 	rm -f $(PAM_SO) $(UNSEAL_BIN)
