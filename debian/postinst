@@ -1,0 +1,20 @@
+#!/bin/bash
+set -e
+
+case "$1" in
+    configure)
+        # setuid root on the unseal helper — required for TPM access
+        chown root:root /usr/local/bin/howdy-secure-unseal
+        chmod 4755 /usr/local/bin/howdy-secure-unseal
+
+        echo ""
+        echo "Howdy Secure installed successfully."
+        echo ""
+        echo "To set up face authentication and keyring unlock, run:"
+        echo "  howdy-secure-installer    (GUI wizard)"
+        echo "  sudo howdy-secure setup   (terminal)"
+        echo ""
+        ;;
+esac
+
+exit 0

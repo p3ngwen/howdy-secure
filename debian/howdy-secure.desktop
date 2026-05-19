@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Howdy Secure
+Comment=Manage face authentication and keyring unlock
+Exec=howdy-secure-app
+Icon=security-high-symbolic
+Terminal=false
+Type=Application
+Categories=System;Settings;Security;
+Keywords=face;auth;keyring;tpm;howdy;biometric;

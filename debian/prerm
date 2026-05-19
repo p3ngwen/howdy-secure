@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+
+case "$1" in
+    remove|purge)
+        if command -v howdy-secure &>/dev/null; then
+            echo "Cleaning up Howdy Secure configuration..."
+            howdy-secure remove --yes 2>/dev/null || true
+        fi
+        ;;
+esac
+
+exit 0

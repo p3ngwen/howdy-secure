@@ -8,7 +8,7 @@ PAM_DIR    = /usr/lib/security
 BIN_DIR    = /usr/local/bin
 CLI_DIR    = /usr/local/lib/howdy-secure
 
-.PHONY: all clean install uninstall gui-deps
+.PHONY: all clean install uninstall gui-deps deb
 
 all: $(PAM_SO) $(UNSEAL_BIN)
 
@@ -47,6 +47,9 @@ uninstall:
 	rm -f $(BIN_DIR)/howdy-secure-app
 	rm -rf $(CLI_DIR)
 	@echo "Uninstalled. Run 'sudo howdy-secure remove' first to clean PAM config and TPM."
+
+deb:
+	bash build-deb.sh
 
 gui-deps:
 	apt-get install -y python3-gi gir1.2-gtk-3.0 gir1.2-vte-2.91 gir1.2-ayatanaappindicator3-0.1

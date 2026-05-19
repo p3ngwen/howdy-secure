@@ -1,0 +1,22 @@
+Package: howdy-secure
+Version: 1.0.0
+Architecture: amd64
+Maintainer: p3ngwen <jeremy@goodguytek.com>
+Section: utils
+Priority: optional
+Depends: tpm2-tools, python3, python3-gi, gir1.2-gtk-3.0, gir1.2-vte-2.91,
+ gir1.2-ayatanaappindicator3-0.1, libpam-python, libpam0g
+Recommends: howdy
+Description: Seamless GNOME Keyring unlock via face auth and TPM2
+ After a successful Howdy face-authentication login, Howdy Secure
+ automatically unlocks your GNOME Keyring — no password popup.
+ .
+ Your keyring password is sealed into the TPM at setup time and can
+ only be unsealed on the same machine. A recovery code is generated
+ for TPM-reset or kernel-update scenarios.
+ .
+ Includes a GTK3 installer wizard (howdy-secure-installer) and a
+ system tray management app (howdy-secure-app) for ongoing use.
+ .
+ Note: Howdy itself requires the ppa:boltgolt/howdy PPA. The included
+ installer wizard handles this automatically.

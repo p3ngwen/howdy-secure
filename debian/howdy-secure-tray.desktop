@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Howdy Secure Tray
+Comment=Howdy Secure system tray indicator
+Exec=howdy-secure-app
+Icon=security-high-symbolic
+Terminal=false
+Type=Application
+X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-Delay=5
