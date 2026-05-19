@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+"""
+Howdy Secure — Seamless GNOME Keyring unlock via Howdy face auth + TPM2
+"""
+
+import sys
+import os
+import argparse
+
+# When installed, our Python modules live here; add it so bare imports work.
+_LIB_DIR = "/usr/local/lib/howdy-secure"
+if _LIB_DIR not in sys.path:
+    sys.path.insert(0, _LIB_DIR)
+
+def require_root():
+    if os.geteuid() != 0:
+        print("Error: this command must be run as root (use sudo).")
+        sys.exit(1)
+
+def cmd_setup(args):
+    from setup_wizard import run_setup
+    require_root()
+    run_setup()
+
+def cmd_enroll(args):
+    from setup_wizard import run_enroll
+    require_root()
+    run_enroll()
+
+def cmd_recover(args):
+    from recovery import run_recovery
+    require_root()
+    run_recovery()
+
+def cmd_status(args):
+    from status import run_status
+    run_status()
+
+def cmd_remove(args):
+    from setup_wizard import run_remove
+    require_root()
+    run_remove()
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog="howdy-secure",
+        description="Seamless GNOME Keyring unlock using Howdy face auth and TPM2.",
+    )
+    sub = parser.add_subparsers(dest="command", metavar="COMMAND")
+    sub.required = True
+
+    sub.add_parser("setup",   help="Initial setup — enroll face auth and seal keyring password into TPM")
+    sub.add_parser("enroll",  help="Re-enroll after a kernel update or TPM policy change")
+    sub.add_parser("recover", help="Recover using your recovery code (e.g. after TPM wipe)")
+    sub.add_parser("status",  help="Show current installation status")
+    sub.add_parser("remove",  help="Uninstall Howdy Secure and restore original PAM config")
+
+    dispatch = {
+        "setup":   cmd_setup,
+        "enroll":  cmd_enroll,
+        "recover": cmd_recover,
+        "status":  cmd_status,
+        "remove":  cmd_remove,
+    }
+
+    args = parser.parse_args()
+    dispatch[args.command](args)
+
+if __name__ == "__main__":
+    main()
