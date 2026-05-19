@@ -39,7 +39,7 @@ Your keyring password is sealed into the TPM at setup time. It can only be unsea
 The install script handles everything end-to-end: IR emitter → Howdy → Howdy Secure.
 
 ```bash
-git clone https://github.com/your-username/howdy-secure
+git clone https://github.com/p3ngwen/howdy-secure
 cd howdy-secure
 sudo ./install.sh
 ```
